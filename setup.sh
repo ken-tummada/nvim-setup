@@ -2,8 +2,7 @@
 
 mkdir "$HOME/tmp"
 
-curl -L -o "$HOME/tmp/nvim.tar.gz"\ 
-    https://github.com/neovim/neovim/releases/latest/download/nvim-linux-x86_64.tar.gz
+curl -L -o "$HOME/tmp/nvim.tar.gz" https://github.com/neovim/neovim/releases/latest/download/nvim-linux-x86_64.tar.gz
 
 mkdir -p "$HOME/tmp/.local"
 
