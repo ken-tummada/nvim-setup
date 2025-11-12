@@ -58,6 +58,23 @@ require("lazy").setup({
 
   { "windwp/nvim-autopairs" },
   { "sainnhe/sonokai" },
+
+  {
+    "williamboman/mason.nvim",
+    build = ":MasonUpdate",
+    config = true
+  },
+
+  { "williamboman/mason-lspconfig.nvim" },
+
+  {
+    "hrsh7th/nvim-cmp", dependencies = {
+        "hrsh7th/cmp-nvim-lsp",
+        "hrsh7th/cmp-buffer",
+        "hrsh7th/cmp-path",
+        "L3MON4D3/LuaSnip",
+      },
+   }
 })
 
 -- Theme
@@ -70,11 +87,25 @@ vim.keymap.set("n", "<C-p>", ":Telescope find_files<CR>", { silent = true })
 vim.keymap.set("n", "<C-f>", ":Telescope live_grep<CR>", { silent = true })
 
 -- Setup LSP servers
+
+require("mason").setup()
+require("mason-lspconfig").setup({
+  ensure_installed = { "pyright", "clangd", "lua_ls" },
+})
+
 local lspconfig = require("lspconfig")
 local capabilities = require("cmp_nvim_lsp").default_capabilities()
-lspconfig.pyright.setup{ capabilities = capabilities }   -- for Python
-lspconfig.tsserver.setup{ capabilities = capabilities }  -- for TypeScript/JavaScript
--- (add more servers as you need)
+
+lspconfig.pyright.setup({ capabilities = capabilities })
+
+lspconfig.lua_ls.setup({
+  capabilities = capabilities,
+  settings = {
+    Lua = {
+      diagnostics = { globals = { "vim" } },
+    },
+  },
+})
 
 
 require("nvim-autopairs").setup({})
