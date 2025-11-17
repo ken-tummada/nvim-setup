@@ -10,6 +10,9 @@ vim.o.completeopt = "menu,menuone,noselect"  -- good for completion popup
 vim.o.lazyredraw = true
 vim.o.ttyfast = true
 
+vim.opt.spell = true
+vim.opt.spelllang = { "en_us" }
+
 vim.g.mapleader = " "  -- make Space your leader key
 
 -- Plugin Manager (lazy.nvim)
@@ -90,12 +93,14 @@ vim.keymap.set("n", "<C-f>", ":Telescope live_grep<CR>", { silent = true })
 
 require("mason").setup()
 require("mason-lspconfig").setup({
-  ensure_installed = { "pyright", "clangd", "lua_ls" },
+  ensure_installed = { "pyright", "clangd", "lua_ls", "typos_lsp" },
 })
 
 local lspconfig = require("lspconfig")
 local capabilities = require("cmp_nvim_lsp").default_capabilities()
 
+
+lspconfig.typos_lsp.setup({})
 lspconfig.pyright.setup({ capabilities = capabilities })
 
 lspconfig.lua_ls.setup({
@@ -106,6 +111,11 @@ lspconfig.lua_ls.setup({
     },
   },
 })
+
+vim.keymap.set("n", "<leader>d", function()
+  vim.diagnostic.open_float(nil, { focus = false })
+end, { desc = "Show diagnostics in float" })
+vim.keymap.set("n", "<leader>q", vim.diagnostic.setloclist, { desc = "Open diagnostics list" })
 
 
 require("nvim-autopairs").setup({})
@@ -171,4 +181,10 @@ lspconfig.pyright.setup{
   end,
   cmd = { "clangd", "--background-index", "--clang-tidy" },
 }
+
+lspconfig.clangd.setup({
+  init_options = {
+    fallbackFlags = { "-std=c++20", "-Iinclude" }
+  },
+})
 
