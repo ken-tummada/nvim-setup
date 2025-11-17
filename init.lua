@@ -98,11 +98,27 @@ require("mason-lspconfig").setup({
 
 local lspconfig = require("lspconfig")
 local capabilities = require("cmp_nvim_lsp").default_capabilities()
-
+local on_attach = function(client, bufnr)
+    local opts = { buffer = bufnr, noremap = true, silent = true }
+    vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
+    vim.keymap.set("n", "gD", vim.lsp.buf.declaration, opts)
+    vim.keymap.set("n", "gi", vim.lsp.buf.implementation, opts)
+    vim.keymap.set("n", "K", vim.lsp.buf.hover, opts)
+    vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, opts)
+end
 
 lspconfig.typos_lsp.setup({})
-lspconfig.pyright.setup({ capabilities = capabilities })
-
+lspconfig.pyright.setup({
+    capabilities = capabilities,
+    on_attach = on_attach
+})
+lspconfig.clangd.setup({
+    capabilities = capabilities,
+    on_attach = on_attach,
+    init_options = {
+        fallbackFlags = { "-std=c++20", "-Iinclude" }
+    },
+})
 lspconfig.lua_ls.setup({
   capabilities = capabilities,
   settings = {
@@ -166,25 +182,5 @@ require("oil").setup({
 vim.keymap.set("n", "-", "<CMD>Oil<CR>", { desc = "Open parent directory / file explorer" })
 
 
-local lspconfig = require("lspconfig")
-local capabilities = require("cmp_nvim_lsp").default_capabilities()
 
-lspconfig.pyright.setup{
-  capabilities = capabilities,
-  on_attach = function(client, bufnr)
-    -- optional: keybindings for LSP actions like go-to-definition, hover, etc
-    local opts = { noremap=true, silent=true, buffer=bufnr }
-    vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
-    vim.keymap.set("n", "K", vim.lsp.buf.hover, opts)
-    vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, opts)
-    -- add other bindings as you like
-  end,
-  cmd = { "clangd", "--background-index", "--clang-tidy" },
-}
-
-lspconfig.clangd.setup({
-  init_options = {
-    fallbackFlags = { "-std=c++20", "-Iinclude" }
-  },
-})
 
