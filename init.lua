@@ -68,7 +68,12 @@ require("lazy").setup({
     config = true
   },
 
-  { "williamboman/mason-lspconfig.nvim" },
+  {
+    "williamboman/mason-lspconfig.nvim",
+    opts = {
+        automatic_enable = false,
+    },
+  },
 
   {
     "hrsh7th/nvim-cmp", dependencies = {
@@ -180,7 +185,3 @@ require("oil").setup({
 
 -- keymap to open oil at current directory
 vim.keymap.set("n", "-", "<CMD>Oil<CR>", { desc = "Open parent directory / file explorer" })
-
-
-
-
